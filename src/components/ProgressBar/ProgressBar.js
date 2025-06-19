@@ -8,57 +8,55 @@ import VisuallyHidden from '../VisuallyHidden';
 const SIZES = {
   small: {
     '--height': '8px',
-    '--innerHeight': '8px',
+    '--outerRadius': '4px',
+    '--padding': 0,
   },
   medium: {
     '--height': '12px',
-    '--innerHeight': '12px',
+    '--outerRadius': '4px',
+    '--padding': 0,
   },
   large: {
-    '--height': '24px',
-    '--innerHeight': '16px',
+    '--height': '16px',
+    '--outerRadius': '8px',
+    '--padding': '4px',
   },
-};
-
-const getBorderRadius = (value) => {
-  if (value === 100) return '6px';
-  if (value >= 99.8) return '4px';
-  return '4px 0 0 4px';
 };
 
 const ProgressBar = ({ value, size }) => {
   const style = {
     ...SIZES[size],
-    '--borderRadius': getBorderRadius(value),
+    '--width': value + '%',
   };
 
   return (
     <Wrapper style={style} size={size}>
-      <Progress
-        role="progressbar"
-        value={value}
-        aria-valuenow={value}
-      ></Progress>
+      <BarWrapper>
+        <Bar role="progressbar" aria-valuenow={value}></Bar>
+      </BarWrapper>
       <VisuallyHidden>Progress Bar at {value}%</VisuallyHidden>
     </Wrapper>
   );
 };
 
 const Wrapper = styled.div`
-  display: flex;
-  align-items: center;
   width: 320px;
-  height: var(--height);
-  border-radius: 8px;
   box-shadow: inset 0px 2px 4px ${COLORS.transparentGray35};
-  padding: ${(p) => (p.size === 'large' ? '4px' : 0)};
+  padding: var(--padding);
+  border-radius: var(--outerRadius);
 `;
 
-const Progress = styled.div`
+const Bar = styled.div`
   background-color: ${COLORS.primary};
-  width: ${(p) => p.value + '%'};
-  height: var(--innerHeight);
-  border-radius: var(--borderRadius);
+  width: var(--width);
+  height: var(--height);
+  border-radius: 4px 0 0 4px;
+`;
+
+const BarWrapper = styled.div`
+  /* hidden overflow for Bar rounding inside the div when it near 100% */
+  overflow: hidden;
+  border-radius: var(--outerRadius);
 `;
 
 export default ProgressBar;
